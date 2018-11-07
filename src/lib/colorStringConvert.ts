@@ -40,7 +40,7 @@ const ColorConvert = (color: string): IRGBA => {
       (parseInt(_hsla[0]) % 360) / 360,
       parseInt(_hsla[1]) / 100,
       parseInt(_hsla[2]) / 100,
-      +_hsla[3],
+      _hsla[3] !== undefined ? +_hsla[3] : 1,
     ]);
 
     const h = fHSLA[0];
