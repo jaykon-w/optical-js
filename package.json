@@ -1,7 +1,7 @@
 {
-  "name": "colors-js",
-  "version": "1.0.0",
-  "description": "JS Library to colors manipulation",
+  "name": "optical-js",
+  "version": "0.0.1",
+  "description": "JS library to colors manipulation",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -10,8 +10,14 @@
   },
   "keywords": [
     "colors",
-    "js"
+    "js",
+    "optical",
+    "phisics"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaykon-w/optical-js"
+  },
   "author": "Jaykon. Willian de Oliveira",
   "license": "ISC",
   "devDependencies": {
