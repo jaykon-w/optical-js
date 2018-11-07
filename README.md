@@ -5,11 +5,16 @@
 A tiny javascript library to manipulate colors
 
 ## Instalation
-`npm i optical-js -s`
+
+```
+npm i optical-js -s
+```
 
 or
 
-`yarn add optical-js`
+```
+yarn add optical-js
+```
 
 Optical-js has a `Color` constructor or isolated functions that allow you to manipulate colors.
 
