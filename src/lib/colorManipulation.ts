@@ -5,10 +5,7 @@ export const getDistanceColor = (
   color1: IColorOptions,
   color2: IColorOptions
 ): number => {
-  const _color1 = new Color(color1);
-  const _color2 = new Color(color2);
-
-  return _color1.getDistance(_color2);
+  return new Color(color1).getDistance(new Color(color2));
 };
 
 export const mix = (
@@ -58,4 +55,36 @@ export const difference = (
   color2: IColorOptions
 ): Color => {
   return new Color(color1).difference(new Color(color2));
+};
+
+export const divide = (color1: IColorOptions, color2: IColorOptions): Color => {
+  return new Color(color1).divide(new Color(color2));
+};
+
+export const addition = (
+  color1: IColorOptions,
+  color2: IColorOptions
+): Color => {
+  return new Color(color1).addition(new Color(color2));
+};
+
+export const subtract = (
+  color1: IColorOptions,
+  color2: IColorOptions
+): Color => {
+  return new Color(color1).subtract(new Color(color2));
+};
+
+export const darkenOnly = (
+  color1: IColorOptions,
+  color2: IColorOptions
+): Color => {
+  return new Color(color1).darkenOnly(new Color(color2));
+};
+
+export const lightenOnly = (
+  color1: IColorOptions,
+  color2: IColorOptions
+): Color => {
+  return new Color(color1).lightenOnly(new Color(color2));
 };

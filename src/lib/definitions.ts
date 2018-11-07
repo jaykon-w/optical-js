@@ -15,7 +15,7 @@ export interface IHSLA {
 export enum E_COLOR_TYPE {
   COLOR,
   RGBA,
-  STRING
+  STRING,
 }
 
 export interface IColor {
@@ -25,15 +25,15 @@ export interface IColor {
   toRGBAString(): string;
   toHSLAString(): string;
 
-  alpha(num?: number): number;
+  alpha(num: number): this;
 
-  hue(num?: number): number;
-  saturation(num?: number): number;
-  light(num?: number): number;
+  hue(num: number): this;
+  saturation(num: number): this;
+  light(num: number): this;
 
-  red(num?: number): number;
-  green(num?: number): number;
-  blue(num?: number): number;
+  red(num: number): this;
+  green(num: number): this;
+  blue(num: number): this;
 
   saturate(num: number): this;
   desaturate(num: number): this;
@@ -51,6 +51,11 @@ export interface IColor {
   overlay(color: IColor): this;
   mix(color: IColor, weight?: number): this;
   difference(color: IColor): this;
+  divide(color: IColor): this;
+  addition(color: IColor): this;
+  subtract(color: IColor): this;
+  darkenOnly(color: IColor): this;
+  lightenOnly(color: IColor): this;
 
   getDistance(color: IColor): number;
 }

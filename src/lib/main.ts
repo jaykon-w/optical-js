@@ -2,6 +2,12 @@ import ColorConvert from "./colorStringConvert";
 import { IColor, IColorOptions, IHSLA, IRGBA } from "./definitions";
 import { ColorError } from "./errors";
 import { clamp } from "./helper";
+import colorsTable from "./colorsTable";
+
+const rgbClamp = clamp(0, 255);
+const alphaClamp = clamp(0, 1);
+const percentClamp = clamp(0, 100);
+const angleClamp = clamp(0, 360);
 
 export class Color implements IColor {
   static toRGBA(color: IColorOptions): IRGBA {
@@ -25,26 +31,31 @@ export class Color implements IColor {
     if (max == min) {
       h = s = 0;
     } else {
-      const d = max - min;
-      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-      switch (max) {
-        case rgba.r:
-          h = (rgba.g - rgba.b) / d + (rgba.g < rgba.b ? 6 : 0);
-          break;
-        case rgba.g:
-          h = (rgba.b - rgba.r) / d + 2;
-          break;
-        case rgba.b:
-          h = (rgba.r - rgba.g) / d + 4;
-          break;
+      if (l < 0.5) {
+        s = (max - min) / (max + min);
+      } else {
+        s = (max - min) / (2.0 - max - min);
       }
-      h /= 6;
+      if (rgba.r == max) {
+        h = (rgba.g - rgba.b) / (max - min);
+      } else if (rgba.g == max) {
+        h = 2.0 + (rgba.b - rgba.r) / (max - min);
+      } else {
+        h = 4.0 + (rgba.r - rgba.g) / (max - min);
+      }
+    }
+
+    l *= 100;
+    s *= 100;
+    h *= 60;
+    if (h < 0) {
+      h += 360;
     }
 
     return {
-      h: Math.floor(h * 360),
-      s: Math.floor(s * 100),
-      l: Math.floor(l * 100),
+      h,
+      s,
+      l,
       a: rgba.a
     };
   }
@@ -65,15 +76,17 @@ export class Color implements IColor {
     return (
       ["rbga", "hsla", "rbg(", "hsl("].indexOf(
         (color as string).substring(0, 4)
-      ) >= 0 || color[0] === "#"
+      ) >= 0 ||
+      color[0] === "#" ||
+      colorsTable[color as string]
     );
   }
 
   static build(color: IColorOptions): IRGBA {
-    if (Color.isRGBAFormat(color)) return color;
+    if (Color.isRGBAFormat(color)) return { ...color };
     if (Color.isHSLAFormat(color))
       return ColorConvert(Color.toHSLAString(color));
-    if (Color.isColorFormat(color)) return color.rgba;
+    if (Color.isColorFormat(color)) return { ...color.rgba };
     if (Color.isStringColorFormat(color)) return ColorConvert(color);
     else throw new ColorError("Unexpected color format");
   }
@@ -109,92 +122,80 @@ export class Color implements IColor {
     return Color.toHSLAString(Color.toHSLA(this.rgba));
   }
 
-  alpha(num?: number): number {
-    if (num !== undefined) {
-      this.rgba.a = clamp(0, 1)(+num);
-      this.setColor(this.rgba);
-    }
-    return this.rgba.a;
+  alpha(num: number): this {
+    this.rgba.a = alphaClamp(+num);
+    this.setColor(this.rgba);
+    return this;
   }
 
-  hue(num?: number): number {
-    if (num !== undefined) {
-      this.hsla.h = clamp(0, 360)(+num);
-      this.setColor(this.hsla);
-    }
-    return this.hsla.h;
+  hue(num: number): this {
+    this.hsla.h = angleClamp(+num);
+    this.setColor(this.hsla);
+    return this;
   }
 
-  saturation(num?: number): number {
-    if (num !== undefined) {
-      this.hsla.s = clamp(0, 100)(+num);
-      this.setColor(this.hsla);
-    }
-    return this.hsla.s;
+  saturation(num: number): this {
+    this.hsla.s = percentClamp(+num);
+    this.setColor(this.hsla);
+    return this;
   }
 
-  light(num?: number): number {
-    if (num !== undefined) {
-      this.hsla.l = clamp(0, 100)(+num);
-      this.setColor(this.hsla);
-    }
-    return this.hsla.l;
+  light(num: number): this {
+    this.hsla.l = percentClamp(+num);
+    this.setColor(this.hsla);
+    return this;
   }
 
-  red(num?: number): number {
-    if (num !== undefined) {
-      this.rgba.r = clamp(0, 255)(+num);
-      this.setColor(this.rgba);
-    }
-    return this.rgba.r;
+  red(num: number): this {
+    this.rgba.r = rgbClamp(+num);
+    this.setColor(this.rgba);
+    return this;
   }
 
-  green(num?: number): number {
-    if (num !== undefined) {
-      this.rgba.g = clamp(0, 255)(+num);
-      this.setColor(this.rgba);
-    }
-    return this.rgba.g;
+  green(num: number): this {
+    this.rgba.g = rgbClamp(+num);
+    this.setColor(this.rgba);
+    return this;
   }
 
-  blue(num?: number): number {
-    if (num !== undefined) {
-      this.rgba.b = clamp(0, 255)(+num);
-      this.setColor(this.rgba);
-    }
-    return this.rgba.b;
+  blue(num: number): this {
+    this.rgba.b = rgbClamp(+num);
+    this.setColor(this.rgba);
+    return this;
   }
 
   saturate(num: number): this {
-    this.hsla.s = clamp(0, 100)(Math.abs(+num + this.hsla.s));
+    console.log(this.hsla);
+    this.hsla.s = percentClamp(+num + this.hsla.s);
+    console.log(this.hsla);
     this.setColor(this.hsla);
 
     return this;
   }
 
   desaturate(num: number): this {
-    this.hsla.s = clamp(0, 100)(Math.abs(+num - this.hsla.s));
+    this.hsla.s = percentClamp(Math.abs(+num - this.hsla.s));
     this.setColor(this.hsla);
 
     return this;
   }
 
   lighten(num: number): this {
-    this.hsla.l = clamp(0, 100)(Math.abs(+num + this.hsla.l));
+    this.hsla.l = percentClamp(+num + this.hsla.l);
     this.setColor(this.hsla);
 
     return this;
   }
 
   darken(num: number): this {
-    this.hsla.l = clamp(0, 100)(Math.abs(+num - this.hsla.l));
+    this.hsla.l = percentClamp(Math.abs(+num - this.hsla.l));
     this.setColor(this.hsla);
 
     return this;
   }
 
   opacify(num: number): this {
-    this.rgba.a = clamp(0, 1)(Math.abs(+num - this.rgba.a));
+    this.rgba.a = alphaClamp(this.rgba.a - +num);
     this.setColor(this.rgba);
 
     return this;
@@ -208,21 +209,21 @@ export class Color implements IColor {
   }
 
   redish(num: number): this {
-    this.rgba.r = clamp(0, 255)(Math.abs(+num - this.rgba.r));
+    this.rgba.r = rgbClamp(Math.abs(+num + this.rgba.r));
     this.setColor(this.rgba);
 
     return this;
   }
 
   greenish(num: number): this {
-    this.rgba.g = clamp(0, 255)(Math.abs(+num - this.rgba.g));
+    this.rgba.g = rgbClamp(Math.abs(+num + this.rgba.g));
     this.setColor(this.rgba);
 
     return this;
   }
 
   blueish(num: number): this {
-    this.rgba.b = clamp(0, 255)(Math.abs(+num - this.rgba.b));
+    this.rgba.b = rgbClamp(Math.abs(+num + this.rgba.b));
     this.setColor(this.rgba);
 
     return this;
@@ -308,6 +309,66 @@ export class Color implements IColor {
     return this.setColor({ r, g, b, a });
   }
 
+  divide(color: IColor): this {
+    const rgba1 = this.rgba;
+    const rgba2 = new Color(color).rgba;
+
+    const r = (rgba1.r / rgba2.r) * 255;
+    const g = (rgba1.g / rgba2.g) * 255;
+    const b = (rgba1.b / rgba2.b) * 255;
+    const a = rgba1.a;
+
+    return this.setColor({ r, g, b, a });
+  }
+
+  addition(color: IColor): this {
+    const rgba1 = this.rgba;
+    const rgba2 = new Color(color).rgba;
+
+    const r = rgbClamp(rgba1.r + rgba2.r);
+    const g = rgbClamp(rgba1.g + rgba2.g);
+    const b = rgbClamp(rgba1.b + rgba2.b);
+    const a = rgba1.a;
+
+    return this.setColor({ r, g, b, a });
+  }
+
+  subtract(color: IColor): this {
+    const rgba1 = this.rgba;
+    const rgba2 = new Color(color).rgba;
+
+    const r = rgbClamp(rgba1.r - rgba2.r);
+    const g = rgbClamp(rgba1.g - rgba2.g);
+    const b = rgbClamp(rgba1.b - rgba2.b);
+    const a = rgba1.a;
+
+    return this.setColor({ r, g, b, a });
+  }
+
+  darkenOnly(color: IColor): this {
+    const rgba1 = this.rgba;
+    const rgba2 = new Color(color).rgba;
+
+    const r = Math.min(rgba1.r, rgba2.r);
+    const g = Math.min(rgba1.g, rgba2.g);
+    const b = Math.min(rgba1.b, rgba2.b);
+    const a = rgba1.a;
+
+    return this.setColor({ r, g, b, a });
+  }
+
+  lightenOnly(color: IColor): this {
+    const rgba1 = this.rgba;
+    const rgba2 = new Color(color).rgba;
+
+    const r = Math.max(rgba1.r, rgba2.r);
+    const g = Math.max(rgba1.g, rgba2.g);
+    const b = Math.max(rgba1.b, rgba2.b);
+    const a = rgba1.a;
+
+    return this.setColor({ r, g, b, a });
+  }
+
   getDistance(color: IColor): number {
     const rgba1 = this.rgba;
     const rgba2 = new Color(color).rgba;
@@ -328,6 +389,6 @@ export class Color implements IColor {
   }
 
   private toHSLA(): IHSLA {
-    return this.hsla || Color.toHSLA(this.rgba);
+    return Color.toHSLA(this.rgba);
   }
 }
