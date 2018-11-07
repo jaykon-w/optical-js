@@ -1,0 +1,20 @@
+{
+  "name": "colors-js",
+  "version": "1.0.0",
+  "description": "JS Library to colors manipulation",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepublish": "npm run build"
+  },
+  "keywords": [
+    "colors",
+    "js"
+  ],
+  "author": "Jaykon. Willian de Oliveira",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^3.1.6"
+  }
+}
