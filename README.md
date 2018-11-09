@@ -305,6 +305,10 @@ A famous library call `styled-component` is very usefull for react aplicattions.
 This library replace preprocessors like sass or less, but, styled-components not has alternatives to manipulate colors like less or sass. With `optical-js` you can continue to use that colors manipulation methods.
 
 ```js
+import { darken, ligthen } from 'optical-js';
+import * as React from 'react';
+import styled from 'styled-components';
+
 const colors = {
   primary: '#2196f3',
   secondary: '#8bc34a',
