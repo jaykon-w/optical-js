@@ -308,19 +308,19 @@ This library replace preprocessors like sass or less, but, styled-components not
 const colors = {
   primary: '#2196f3',
   secondary: '#8bc34a',
+  default: '#dedede';
 };
 
+const getColor = (color) => colors[color] || colors.default;
+
 const Button = styled.button`
-  background: ${props => (props.primary ? colors.primary : colors.secondary)};
+  background: ${props => getColor(props.color)};
   color: white;
-  border: 2px solid ${props =>
-    darken(props.primary ? colors.primary : colors.secondary, 10)};
-  };
+  border: 2px solid ${props => darken(getColor(props.color), 10)};
   border-radius: 3px;
 
    &:hover {
-    background: ${props =>
-      ligthen(props.primary ? colors.primary : colors.secondary, 10)};
+    background: ${props => ligthen(getColor(props.color), 10)};
   }
 `;
 ```
