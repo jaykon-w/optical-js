@@ -293,3 +293,34 @@ Apply `LightenOnly` color algorithm, accept all of the colors formats, Ex:
 ![#ff2aff](https://placehold.it/15/ff2aff/000000?text=+)
 <span style="background-color:rgb(255, 42, 255);">&nbsp;&nbsp;&nbsp;&nbsp;</span>
 
+
+## Use case
+
+A famous library call `styled-component` is very usefull for react aplicattions.
+
+> styled-components is the result of wondering how we could enhance CSS for styling React component systems. By focusing on a single use case we managed to optimize the experience for developers as well as the output for end users.
+
+*by **styled-component***
+
+This library replace preprocessors like sass or less, but, styled-components not has alternatives to manipulate colors like less or sass. With `optical-js` you can continue to use that colors manipulation methods.
+
+```js
+const colors = {
+  primary: '#2196f3',
+  secondary: '#8bc34a',
+};
+
+const Button = styled.button`
+  background: ${props => (props.primary ? colors.primary : colors.secondary)};
+  color: white;
+  border: 2px solid ${props =>
+    darken(props.primary ? colors.primary : colors.secondary, 10)};
+  };
+  border-radius: 3px;
+
+   &:hover {
+    background: ${props =>
+      ligthen(props.primary ? colors.primary : colors.secondary, 10)};
+  }
+`;
+```
