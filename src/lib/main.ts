@@ -122,114 +122,87 @@ export class Color implements IColor {
     return Color.toHSLAString(Color.toHSLA(this.rgba));
   }
 
-  alpha(num: number): this {
+  alpha(num: number): Color {
     this.rgba.a = alphaClamp(+num);
-    this.setColor(this.rgba);
-    return this;
+    return new Color(this.rgba);
   }
 
-  hue(num: number): this {
+  hue(num: number): Color {
     this.hsla.h = angleClamp(+num);
-    this.setColor(this.hsla);
-    return this;
+    return new Color(this.hsla);
   }
 
-  saturation(num: number): this {
+  saturation(num: number): Color {
     this.hsla.s = percentClamp(+num);
-    this.setColor(this.hsla);
-    return this;
+    return new Color(this.hsla);
   }
 
-  light(num: number): this {
+  light(num: number): Color {
     this.hsla.l = percentClamp(+num);
-    this.setColor(this.hsla);
-    return this;
+    return new Color(this.hsla);
   }
 
-  red(num: number): this {
+  red(num: number): Color {
     this.rgba.r = rgbClamp(+num);
-    this.setColor(this.rgba);
-    return this;
+    return new Color(this.rgba);
   }
 
-  green(num: number): this {
+  green(num: number): Color {
     this.rgba.g = rgbClamp(+num);
-    this.setColor(this.rgba);
-    return this;
+    return new Color(this.rgba);
   }
 
-  blue(num: number): this {
+  blue(num: number): Color {
     this.rgba.b = rgbClamp(+num);
-    this.setColor(this.rgba);
-    return this;
+    return new Color(this.rgba);
   }
 
-  saturate(num: number): this {
-    console.log(this.hsla);
+  saturate(num: number): Color {
     this.hsla.s = percentClamp(+num + this.hsla.s);
-    console.log(this.hsla);
-    this.setColor(this.hsla);
-
-    return this;
+    return new Color(this.hsla);
   }
 
-  desaturate(num: number): this {
+  desaturate(num: number): Color {
     this.hsla.s = percentClamp(Math.abs(+num - this.hsla.s));
-    this.setColor(this.hsla);
-
-    return this;
+    return new Color(this.hsla);
   }
 
-  lighten(num: number): this {
+  lighten(num: number): Color {
     this.hsla.l = percentClamp(+num + this.hsla.l);
-    this.setColor(this.hsla);
-
-    return this;
+    return new Color(this.hsla);
   }
 
-  darken(num: number): this {
+  darken(num: number): Color {
     this.hsla.l = percentClamp(Math.abs(+num - this.hsla.l));
-    this.setColor(this.hsla);
-
-    return this;
+    return new Color(this.hsla);
   }
 
-  opacify(num: number): this {
+  opacify(num: number): Color {
     this.rgba.a = alphaClamp(this.rgba.a - +num);
-    this.setColor(this.rgba);
-
-    return this;
+    return new Color(this.rgba);
   }
 
-  hueRotate(num: number): this {
+  hueRotate(num: number): Color {
     this.hsla.h = Math.abs(+num + this.hsla.h) % 361;
-    this.setColor(this.hsla);
-
-    return this;
+    return new Color(this.hsla);
   }
 
-  redish(num: number): this {
+  redish(num: number): Color {
     this.rgba.r = rgbClamp(Math.abs(+num + this.rgba.r));
-    this.setColor(this.rgba);
-
-    return this;
+    return new Color(this.rgba);
   }
 
-  greenish(num: number): this {
+  greenish(num: number): Color {
     this.rgba.g = rgbClamp(Math.abs(+num + this.rgba.g));
-    this.setColor(this.rgba);
-
-    return this;
+    return new Color(this.rgba);
   }
 
-  blueish(num: number): this {
+  blueish(num: number): Color {
     this.rgba.b = rgbClamp(Math.abs(+num + this.rgba.b));
-    this.setColor(this.rgba);
-
-    return this;
+    return new Color(this.rgba);
   }
 
-  multiply(color: IColor): this {
+  multiply(color: IColorOptions): Color {
     const rgba1 = this.rgba;
     const rgba2 = new Color(color).rgba;
 
@@ -238,10 +211,10 @@ export class Color implements IColor {
     const b = Math.round((rgba1.b + rgba2.b) / 2);
     const a = (rgba1.a + rgba2.a) / 2;
 
-    return this.setColor({ r, g, b, a });
+    return new Color({ r, g, b, a });
   }
 
-  screen(color: IColor): this {
+  screen(color: IColorOptions): Color {
     const rgba1 = this.rgba;
     const rgba2 = new Color(color).rgba;
 
@@ -250,10 +223,10 @@ export class Color implements IColor {
     const b = 255 - ((255 - rgba1.b) * (255 - rgba2.b)) / 255;
     const a = (rgba1.a + rgba2.a) / 2;
 
-    return this.setColor({ r, g, b, a });
+    return new Color({ r, g, b, a });
   }
 
-  overlay(color: IColor): this {
+  overlay(color: IColorOptions): Color {
     const rgba1 = this.rgba;
     const rgba2 = new Color(color).rgba;
 
@@ -271,16 +244,16 @@ export class Color implements IColor {
         : 255 - (2 * (255 - rgba1.b) * (255 - rgba2.b)) / 255;
     const a = (rgba1.a + rgba2.a) / 2;
 
-    return this.setColor({ r, g, b, a });
+    return new Color({ r, g, b, a });
   }
 
-  mix(color: IColor, weight?: number): this {
+  mix(color: IColorOptions, weight?: number): Color {
     const rgba1 = this.rgba;
     const rgba2 = new Color(color).rgba;
 
-    if (weight === undefined) weight = 50;
+    if (weight === undefined) weight = 0.5;
 
-    const p = weight / 100.0;
+    const p = weight;
     const w = p * 2 - 1;
     const a = rgba1.a - rgba2.a;
 
@@ -294,10 +267,10 @@ export class Color implements IColor {
       a: rgba2.a
     };
 
-    return this.setColor(newColor);
+    return new Color(newColor);
   }
 
-  difference(color: IColor): this {
+  difference(color: IColorOptions): Color {
     const rgba1 = this.rgba;
     const rgba2 = new Color(color).rgba;
 
@@ -306,10 +279,10 @@ export class Color implements IColor {
     const b = Math.abs(rgba1.b - rgba2.b);
     const a = (rgba1.a + rgba2.a) / 2;
 
-    return this.setColor({ r, g, b, a });
+    return new Color({ r, g, b, a });
   }
 
-  divide(color: IColor): this {
+  divide(color: IColorOptions): Color {
     const rgba1 = this.rgba;
     const rgba2 = new Color(color).rgba;
 
@@ -318,10 +291,10 @@ export class Color implements IColor {
     const b = (rgba1.b / rgba2.b) * 255;
     const a = rgba1.a;
 
-    return this.setColor({ r, g, b, a });
+    return new Color({ r, g, b, a });
   }
 
-  addition(color: IColor): this {
+  addition(color: IColorOptions): Color {
     const rgba1 = this.rgba;
     const rgba2 = new Color(color).rgba;
 
@@ -330,10 +303,10 @@ export class Color implements IColor {
     const b = rgbClamp(rgba1.b + rgba2.b);
     const a = rgba1.a;
 
-    return this.setColor({ r, g, b, a });
+    return new Color({ r, g, b, a });
   }
 
-  subtract(color: IColor): this {
+  subtract(color: IColorOptions): Color {
     const rgba1 = this.rgba;
     const rgba2 = new Color(color).rgba;
 
@@ -342,10 +315,10 @@ export class Color implements IColor {
     const b = rgbClamp(rgba1.b - rgba2.b);
     const a = rgba1.a;
 
-    return this.setColor({ r, g, b, a });
+    return new Color({ r, g, b, a });
   }
 
-  darkenOnly(color: IColor): this {
+  darkenOnly(color: IColorOptions): Color {
     const rgba1 = this.rgba;
     const rgba2 = new Color(color).rgba;
 
@@ -354,10 +327,10 @@ export class Color implements IColor {
     const b = Math.min(rgba1.b, rgba2.b);
     const a = rgba1.a;
 
-    return this.setColor({ r, g, b, a });
+    return new Color({ r, g, b, a });
   }
 
-  lightenOnly(color: IColor): this {
+  lightenOnly(color: IColorOptions): Color {
     const rgba1 = this.rgba;
     const rgba2 = new Color(color).rgba;
 
@@ -366,10 +339,10 @@ export class Color implements IColor {
     const b = Math.max(rgba1.b, rgba2.b);
     const a = rgba1.a;
 
-    return this.setColor({ r, g, b, a });
+    return new Color({ r, g, b, a });
   }
 
-  getDistance(color: IColor): number {
+  getDistance(color: IColorOptions): number {
     const rgba1 = this.rgba;
     const rgba2 = new Color(color).rgba;
 
