@@ -319,7 +319,7 @@ const Button = styled.button`
   border: 2px solid ${props => darken(getColor(props.color), 10)};
   border-radius: 3px;
 
-   &:hover {
+  &:hover {
     background: ${props => ligthen(getColor(props.color), 10)};
   }
 `;
